@@ -62,8 +62,9 @@ public class Guesser{
   private String getReply(){
     Scanner scanner = new Scanner(System.in);
     String reply = scanner.nextLine();
-    while(!(reply.equalsIgnoreCase("T") || !(reply.equalsIgnoreCase("F")))){
+    while(!(reply.equalsIgnoreCase("T") || (reply.equalsIgnoreCase("F")))){
     System.out.println("Wrong, please enter either T or F");
+    reply = scanner.nextLine();
     }
     // Write code here which reads a String from the console.
     // As long as it is not a valid reply (one of "T" and "F")
