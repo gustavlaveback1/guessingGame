@@ -13,3 +13,95 @@ En git branch är som en separat utvecklingslinje på vårat arbete. Det är vik
 då vi kan använda nya branches för att pröva kod utan att det påverkar våran
 huvudkod, samt att vi kan utveckla flera versioner parallellt
 
+Jag gjorde en ny branch där jag testade på restore, reset --hard och revert.
+
+Restore:
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ echo "restore test" >> test.txt
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ cat test.txt
+hej
+test 3
+restore test
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git restore test.txt
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ cat test.txt
+hej
+test 3
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$
+
+Med hjälp av restore så gick min test fil tillbaka till hur den var senaste
+committen, I detta fall tog den bort raden där det stod "restore test".
+Restore är användbart när man ångrar ändringar i filer, det fungerar
+med ändringar man inte har committat än, men även ändringar man har i sitt staging area
+Det kan även användas för att ta bort en fil från staging area med --staged flaggan 
+utan att ta bort ändringar i arbetskatalogen
+
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git log --oneline
+832f3ac (HEAD -> git-kommandon-test) removed restore test in test.txt
+0ee55ef (origin/git-kommandon-test) third test
+5a420f3 second test
+be91d36 first test
+
+här är de senaste committsen jag har gjort I min branch.
+med hjälp av git reset --hard så kan jag gå tillbaka till en tidigare commit 
+
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git reset --hard be91d36
+HEAD is now at be91d36 first test
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git log --oneline
+be91d36 (HEAD -> git-kommandon-test) first test
+
+genom att köra git push --forced-with-lease så kan jag pusha efter att jag har kört
+git reset --hard, detta är eftersom vi nu ligger bakom min remote repo.
+Är jag säker på att det bara är jag som använder koden kan jag använda force
+istället, men force-with-lease skriver bara över om ingen annan har pushat,
+så det är säkrare om man arbetar fler på ett och samma project.
+Force skriver över remote direct.
+
+Det finns 3 olika sätt att använda git reset på, --soft --mixed och --hard.
+--soft påverkar bara commit historyn, staging arean och working directory blir inte påverkade
+Det enda det gör är att man flyttar HEAD till en tidigare commit.
+Det är användbart om man gjorde fel när man committade och vill göra om det
+exempelvis fel meddelande eller man committade fel filer.
+
+--mixed är default resetten, det påverkar commit historyn och staging arean, men inte working directory.
+HEAD flyttas och man tömmer staging arean, men ändringarna man har gjort stannar
+kvar i working directory.
+Det är användbard om man exempelvis committar för tidigt, man vill ha kvar
+sina ändringar i working directory och fortsätta i filerna, men man har
+av någon anledning committat för hastigt. Filerna är inte längre kvar i 
+staging arean men är helt oförändrade i working directory.
+
+--hard är det sista sättet man kan använda reset. Det tar bort även i working directory
+utöver de andra två stegen. Som jag visade så används det för att helt enkelt
+gå tillbaka till en tidigare committ, om man inte är nöjd med de senaste committsen
+och bestämmer sig för att gå tillbaka till en tidigare punkt i arbetet.
+Det är dock farligt eftersom det tar bort arbetet från working directory
+så när man väl har gjort det kan det vara väldit svårt att få tillbaka allt det man
+tar bort om man ångrar sig.
+
+efter att jag har addat och committat en ny text med revert test:
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git log --oneline
+d8934b3 (HEAD -> git-kommandon-test) added revert test
+be91d36 (origin/git-kommandon-test) first test
+
+
+efter att jag har kört revert på min senaste commit:
+gustav@LAPTOP-FBBSMVTM:~/guessingGame$ git log --oneline
+d8c460e (HEAD -> git-kommandon-test) Revert "added revert test"
+d8934b3 added revert test
+be91d36 (origin/git-kommandon-test) first test
+
+
+Den sista är revert.
+Revert används för att skapa en ny commit där man har ångrat sin commit.
+Revert ändrar inte committ historiken och den påverkar inte committs
+som man inte specifikt nämner, så den är väldigt effektiv om du ångrar 
+en specifik ändring men inte allt arbete, samt man vill hålla historiken intakt.
+Vi kan även se i mitt exempel ovan:
+"d8c460e (HEAD -> git-kommandon-test) Revert "added revert test""
+hur det skapar en ny commit där jag har revertat en annan commit.
+
