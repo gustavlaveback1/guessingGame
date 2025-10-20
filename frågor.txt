@@ -1,0 +1,15 @@
+Push är när vi skickar det vi har uppdaterat på vårat lokala repo
+till vårat remote repo, exempelvis github, medan pull är när vi hämtar 
+uppdateringarna vi har gjort på vårat remote repo till vårat lokala repo
+
+
+Log använder vi för att se de olika committsen vi har gjort, samt för att se
+de olika commit-hashen som vi kanske vill använda.
+Status använder vi för att se våran status just nu, vilken branch vi är på,
+om vi har ändringar som är eller inte är staged. Det är till för att se de
+förändringar som vi ännu inte har committat.
+
+En git branch är som en separat utvecklingslinje på vårat arbete. Det är viktigt
+då vi kan använda nya branches för att pröva kod utan att det påverkar våran
+huvudkod, samt att vi kan utveckla flera versioner parallellt
+
